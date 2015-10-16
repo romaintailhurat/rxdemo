@@ -5,11 +5,12 @@ https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/creat
 */
 
 const Rx = require('rx');
+const http = require('http');
 
 const stream = Rx.Observable.range(1, 10);
 
 const ok = (obsName, x) => { console.log(`${obsName} : ${x}`); };
-const error = (e) => { console.log('oups!'); };
+const error = (e) => { console.log(`<E> ${e}`); };
 const done = () => { console.log('Done =)'); }
 
 // Subscribe directly
@@ -26,4 +27,12 @@ const observer = Rx.Observer.create(
   done
 );
 
-stream.subscribe(observer);
+//stream.subscribe(observer);
+
+const req = Rx.Observable.fromCallback(http.request);
+const reqStream = req('http://www.agora.insee.fr');
+reqStream.subscribe(
+  x => ok('Observer 3', x),
+  e => error(e),
+  done
+);
